@@ -40,6 +40,7 @@
 ## 🛠 Технологии
 
 ### Backend
+
 - **FastAPI** 0.109 — современный веб-фреймворк
 - **SQLAlchemy 2.0** — ORM с асинхронной поддержкой
 - **PostgreSQL 15** — реляционная база данных
@@ -47,6 +48,7 @@
 - **JWT** — аутентификация
 
 ### Frontend
+
 - **React 18** — UI-библиотека
 - **TypeScript 5** — типизация
 - **Vite 5** — сборщик
@@ -55,12 +57,13 @@
 - **Axios** — HTTP-клиент
 
 ### DevOps
+
 - **Docker & Docker Compose** — контейнеризация
 - **Alembic** — миграции БД
 
 ---
 
-## 🚀 Быстрый старт
+## Быстрый старт
 
 ### Требования
 
@@ -93,7 +96,8 @@ cp frontend/.env.example frontend/.env
 docker-compose up --build
 ```
 
-После запуска:
+**После запуска:**
+
 - **Frontend:** http://localhost:5173
 - **Backend API:** http://localhost:8000
 - **API Docs:** http://localhost:8000/api/docs
@@ -240,7 +244,8 @@ SmartOffice/
 
 ## 📞 Контакты
 
-Для вопросов и предложений:
+**Для вопросов и предложений:**
+
 - GitHub Issues: [Создать issue](https://github.com/yourusername/SmartOffice/issues)
 
 ---

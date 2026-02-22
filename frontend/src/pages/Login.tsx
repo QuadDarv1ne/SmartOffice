@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
-import { login, setToken } from '../api/auth'
+import { login, setToken, setRefreshToken } from '../api/auth'
 
 interface LoginProps {
   onLogin: () => void
@@ -20,6 +20,7 @@ const Login = ({ onLogin }: LoginProps) => {
     try {
       const response = await login({ email, password })
       setToken(response.access_token)
+      setRefreshToken(response.refresh_token)
       localStorage.setItem('userEmail', email)
       onLogin()
     } catch (err: any) {

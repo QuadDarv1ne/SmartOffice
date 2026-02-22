@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { Nav, Navbar, Container, Dropdown } from 'react-bootstrap'
+import { logout } from '../api/auth'
 
 interface LayoutProps {
   onLogout: () => void
@@ -8,9 +9,8 @@ interface LayoutProps {
 const Layout = ({ onLogout }: LayoutProps) => {
   const userEmail = localStorage.getItem('userEmail') || 'user@example.com'
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('userEmail')
+  const handleLogout = async () => {
+    await logout()
     onLogout()
   }
 
