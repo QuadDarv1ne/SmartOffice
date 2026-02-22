@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ToastContainer } from 'react-toastify'
+import { Sentry } from './lib/sentry'
 import App from './App'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'react-toastify/dist/ReactToastify.css'
 import './index.css'
+import './styles/dark-mode.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {

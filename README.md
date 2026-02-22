@@ -3,7 +3,7 @@
 > Умный офис — комплексная система управления корпоративными ресурсами
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react)](https://react.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql)](https://www.postgresql.org/)
 
@@ -19,6 +19,7 @@
 - [Разработка](#-разработка)
 - [API Документация](#-api-документация)
 - [Структура проекта](#-структура-проекта)
+- [Команды Makefile](#-makefile-команды)
 - [Вклад](#-вклад)
 - [Лицензия](#-лицензия)
 
@@ -26,6 +27,7 @@
 
 ## ✨ Возможности
 
+### Основные модули
 | Модуль | Описание |
 |--------|----------|
 | 👥 **HRM** | Учёт сотрудников, отделов, должностей |
@@ -35,35 +37,54 @@
 | 🎯 **KPI** | Оценка эффективности сотрудников |
 | 🎓 **LMS** | Обучение и сертификация |
 
+### Дополнительные возможности
+- 🔔 **Real-time уведомления** через WebSocket
+- 📧 **Email уведомления** о событиях
+- 📁 **Загрузка файлов** (аватары, документы)
+- 🌙 **Тёмная тема** оформления
+- 📊 **Admin Dashboard** с аналитикой
+- 📤 **Экспорт данных** в CSV/Excel
+- 💾 **Backup БД** через CLI
+- 🔍 **Расширенный поиск** и фильтрация
+- 🏥 **Health Checks** для мониторинга
+
 ---
 
 ## 🛠 Технологии
 
 ### Backend
-
-- **FastAPI** 0.109 — современный веб-фреймворк
+- **FastAPI** 0.115+ — современный веб-фреймворк
 - **SQLAlchemy 2.0** — ORM с асинхронной поддержкой
 - **PostgreSQL 15** — реляционная база данных
 - **Pydantic** — валидация данных
-- **JWT** — аутентификация
+- **JWT** — аутентификация с refresh токенами
+- **Structlog** — структурированное логирование
+- **SlowAPI** — rate limiting
+- **WebSockets** — real-time уведомления
+- **Alembic** — миграции БД
+- **Pillow** — обработка изображений
 
 ### Frontend
-
 - **React 18** — UI-библиотека
 - **TypeScript 5** — типизация
 - **Vite 5** — сборщик
 - **React Router 6** — навигация
 - **Bootstrap 5** — компоненты UI
+- **Zustand** — state management
+- **React Query** — кеширование API
+- **React Toastify** — уведомления
 - **Axios** — HTTP-клиент
 
 ### DevOps
-
 - **Docker & Docker Compose** — контейнеризация
+- **Nginx** — production сервер
+- **GitHub Actions** — CI/CD
+- **Redis** — кеширование и rate limiting
 - **Alembic** — миграции БД
 
 ---
 
-## Быстрый старт
+## 🚀 Быстрый старт
 
 ### Требования
 
@@ -219,6 +240,26 @@ SmartOffice/
 
 ---
 
+## 🎯 Makefile команды
+
+Проект включает Makefile для автоматизации常见 задач:
+
+```bash
+make help              # Показать все команды
+make install           # Установить все зависимости
+make dev               # Запустить backend + frontend
+make docker-up         # Запустить Docker контейнеры
+make docker-prod-up    # Запустить production Docker
+make test              # Запустить все тесты
+make lint              # Запустить линтеры
+make migrate           # Создать миграцию Alembic
+make seed              # Наполнить БД тестовыми данными
+make clean             # Очистить временные файлы
+make setup             # Первоначальная настройка проекта
+```
+
+---
+
 ## 🤝 Вклад
 
 Проект открыт для вкладов! Для участия:
@@ -252,13 +293,36 @@ SmartOffice/
 
 ## 📈 Roadmap
 
-- [ ] Unit-тесты (pytest, vitest)
-- [ ] CI/CD (GitHub Actions)
-- [ ] Production Docker (nginx)
-- [ ] Логирование (structlog)
-- [ ] Rate limiting
-- [ ] WebSocket уведомления
-- [ ] Мобильное приложение
+### Выполнено ✅ (33 пункта)
+- [x] Refresh токены для безопасности
+- [x] Rate limiting (защита от brute-force)
+- [x] Логирование (structlog)
+- [x] Service layer для бизнес-логики
+- [x] Alembic миграции
+- [x] Zustand store (frontend)
+- [x] React Toastify уведомления
+- [x] Production Docker (nginx)
+- [x] Seed скрипты
+- [x] Makefile автоматизация
+- [x] CI/CD (GitHub Actions)
+- [x] WebSocket real-time уведомления
+- [x] Admin Dashboard API
+- [x] Экспорт данных (CSV/Excel)
+- [x] Health checks расширенные
+- [x] Backup скрипты БД
+- [x] Загрузка файлов (аватары, документы)
+- [x] Email уведомления
+- [x] Dark mode оформления
+- [x] Страница настроек пользователя
+- [x] Avatar upload компонент
+
+### В планах 🔄
+- [ ] E2E тесты (Playwright)
+- [ ] Мобильное приложение (React Native)
+- [ ] Kubernetes deployment
+- [ ] Prometheus + Grafana мониторинг
+- [ ] GraphQL API
+- [ ] Чат между сотрудниками
 
 ---
 

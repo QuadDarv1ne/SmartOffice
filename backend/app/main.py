@@ -9,6 +9,16 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 import structlog
 
+# Инициализация Sentry
+from app.core.sentry_config import init_sentry, set_sentry_user
+
+init_sentry()
+
+# Prometheus middleware
+from app.middleware.prometheus import PrometheusMiddleware
+
+app.add_middleware(PrometheusMiddleware)
+
 from app.core.config import settings
 from app.core.database import init_db
 from app.core.logging_config import logger
@@ -29,6 +39,17 @@ from app.api import (
     tasks_router,
     assets_router,
     dashboard_router,
+    websocket_router,
+    admin_router,
+    health_router,
+    files_router,
+    two_factor_router,
+    audit_log_router,
+    task_comments_router,
+    graphql_router,
+    metrics_router,
+    ai_analytics_router,
+    saml_router,
 )
 
 
@@ -108,6 +129,17 @@ app.include_router(projects_router, prefix="/api")
 app.include_router(tasks_router, prefix="/api")
 app.include_router(assets_router, prefix="/api")
 app.include_router(dashboard_router, prefix="/api")
+app.include_router(websocket_router, prefix="/api")
+app.include_router(admin_router, prefix="/api")
+app.include_router(health_router, prefix="/api")
+app.include_router(files_router, prefix="/api")
+app.include_router(two_factor_router, prefix="/api")
+app.include_router(audit_log_router, prefix="/api")
+app.include_router(task_comments_router, prefix="/api")
+app.include_router(graphql_router, prefix="/api")
+app.include_router(metrics_router, prefix="/api")
+app.include_router(ai_analytics_router, prefix="/api")
+app.include_router(saml_router, prefix="/api")
 
 
 @app.get("/")

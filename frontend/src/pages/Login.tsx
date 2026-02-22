@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
-import { login, setToken, setRefreshToken } from '../api/auth'
+import { useNavigate } from 'react-router-dom'
+import { login } from '../api/auth'
+import { useAuthStore } from '../store/authStore'
+import { toast } from 'react-toastify'
 
 interface LoginProps {
   onLogin: () => void
@@ -11,6 +14,9 @@ const Login = ({ onLogin }: LoginProps) => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  
+  const loginStore = useAuthStore()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -19,12 +25,14 @@ const Login = ({ onLogin }: LoginProps) => {
 
     try {
       const response = await login({ email, password })
-      setToken(response.access_token)
-      setRefreshToken(response.refresh_token)
-      localStorage.setItem('userEmail', email)
+      loginStore.login(response.access_token, response.refresh_token, email)
+      toast.success('Вход выполнен успешно!')
       onLogin()
+      navigate('/dashboard')
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Ошибка авторизации')
+      const message = err.response?.data?.detail || 'Ошибка авторизации'
+      setError(message)
+      toast.error(message)
     } finally {
       setLoading(false)
     }

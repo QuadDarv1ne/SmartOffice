@@ -1,16 +1,25 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Nav, Navbar, Container, Dropdown } from 'react-bootstrap'
 import { logout } from '../api/auth'
+import { useAuthStore } from '../store/authStore'
+import { toast } from 'react-toastify'
+import { NotificationsBell } from './NotificationsBell'
+import { ThemeToggle } from './ThemeToggle'
 
 interface LayoutProps {
   onLogout: () => void
 }
 
 const Layout = ({ onLogout }: LayoutProps) => {
-  const userEmail = localStorage.getItem('userEmail') || 'user@example.com'
+  const { user, logout: logoutStore } = useAuthStore()
+  const navigate = useNavigate()
+  const userEmail = user?.email || localStorage.getItem('userEmail') || 'user@example.com'
 
   const handleLogout = async () => {
     await logout()
+    logoutStore()
+    toast.success('Выход выполнен')
+    navigate('/login')
     onLogout()
   }
 
@@ -64,23 +73,27 @@ const Layout = ({ onLogout }: LayoutProps) => {
               Система управления
             </Navbar.Brand>
             <Navbar.Collapse className="justify-content-end">
-              <Dropdown align="end">
-                <Dropdown.Toggle variant="light" id="user-dropdown">
-                  <span className="avatar me-2">
-                    {userEmail.charAt(0).toUpperCase()}
-                  </span>
-                  {userEmail}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item href="#profile">Профиль</Dropdown.Item>
-                  <Dropdown.Item href="#settings">Настройки</Dropdown.Item>
-                  <Dropdown.Divider />
-                  <Dropdown.Item onClick={handleLogout}>
-                    <i className="bi bi-box-arrow-right me-2"></i>
-                    Выйти
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+              <div className="d-flex align-items-center gap-3">
+                <ThemeToggle />
+                <NotificationsBell />
+                <Dropdown align="end">
+                  <Dropdown.Toggle variant="light" id="user-dropdown">
+                    <span className="avatar me-2">
+                      {userEmail.charAt(0).toUpperCase()}
+                    </span>
+                    {userEmail}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item href="#profile">Профиль</Dropdown.Item>
+                    <Dropdown.Item href="/settings">Настройки</Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={handleLogout}>
+                      <i className="bi bi-box-arrow-right me-2"></i>
+                      Выйти
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
             </Navbar.Collapse>
           </Container>
         </Navbar>
