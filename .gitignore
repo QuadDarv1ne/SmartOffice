@@ -1,5 +1,4 @@
 # --- Python (backend) ---
-backend/__pycache__/
 backend/*.py[cod]
 backend/*$py.class
 backend/*.so
@@ -50,6 +49,7 @@ Thumbs.db
 # --- Logs ---
 *.log
 logs/
+*__pycache__/
 
 # --- OS ---
 .DS_Store
