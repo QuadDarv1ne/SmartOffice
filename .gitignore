@@ -1,0 +1,64 @@
+# --- Python (backend) ---
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+backend/*.so
+backend/.Python
+backend/venv/
+backend/env/
+backend/.env
+backend/.venv/
+backend/pip-log.txt
+backend/pip-delete-this-directory.txt
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.coverage
+backend/htmlcov/
+backend/.eggs/
+backend/*.egg-info/
+backend/dist/
+backend/build/
+
+# --- Node.js / TypeScript (frontend) ---
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnp/
+frontend/.pnp.js
+frontend/.cache/
+frontend/tsconfig.tsbuildinfo
+
+# --- IDE / Editors ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
+logs/
+
+# --- OS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# --- Docker ---
+.docker/
+
+# --- Misc ---
+*.tmp
+*.temp
+.cache/
