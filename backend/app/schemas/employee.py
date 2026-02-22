@@ -1,11 +1,11 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import date, datetime
 
 
 class DepartmentBase(BaseModel):
-    name: str
-    manager_id: Optional[int] = None
+    name: str = Field(..., min_length=1, max_length=100, description="Название отдела")
+    manager_id: Optional[int] = Field(None, ge=1, description="ID менеджера отдела")
 
 
 class DepartmentCreate(DepartmentBase):
@@ -21,9 +21,12 @@ class DepartmentResponse(DepartmentBase):
 
 
 class PositionBase(BaseModel):
-    title: str
-    min_salary: Optional[float] = None
-    max_salary: Optional[float] = None
+    title: str = Field(..., min_length=1, max_length=100, description="Название должности")
+    min_salary: Optional[float] = Field(None, ge=0, description="Минимальная зарплата")
+    max_salary: Optional[float] = Field(None, ge=0, description="Максимальная зарплата")
+    
+    class Config:
+        validate_assignment = True
 
 
 class PositionCreate(PositionBase):
@@ -38,14 +41,14 @@ class PositionResponse(PositionBase):
 
 
 class EmployeeBase(BaseModel):
-    full_name: str
-    email: Optional[EmailStr] = None
-    phone: Optional[str] = None
-    hire_date: date
-    department_id: int
-    position_id: int
-    manager_id: Optional[int] = None
-    schedule_id: Optional[int] = None
+    full_name: str = Field(..., min_length=1, max_length=150, description="ФИО сотрудника")
+    email: Optional[EmailStr] = Field(None, description="Email")
+    phone: Optional[str] = Field(None, max_length=20, description="Телефон")
+    hire_date: date = Field(..., description="Дата приёма на работу")
+    department_id: int = Field(..., ge=1, description="ID отдела")
+    position_id: int = Field(..., ge=1, description="ID должности")
+    manager_id: Optional[int] = Field(None, ge=1, description="ID непосредственного руководителя")
+    schedule_id: Optional[int] = Field(None, ge=1, description="ID графика работы")
 
 
 class EmployeeCreate(EmployeeBase):
@@ -53,13 +56,16 @@ class EmployeeCreate(EmployeeBase):
 
 
 class EmployeeUpdate(BaseModel):
-    full_name: Optional[str] = None
+    full_name: Optional[str] = Field(None, min_length=1, max_length=150)
     email: Optional[EmailStr] = None
-    phone: Optional[str] = None
-    department_id: Optional[int] = None
-    position_id: Optional[int] = None
-    manager_id: Optional[int] = None
+    phone: Optional[str] = Field(None, max_length=20)
+    department_id: Optional[int] = Field(None, ge=1)
+    position_id: Optional[int] = Field(None, ge=1)
+    manager_id: Optional[int] = Field(None, ge=1)
     termination_date: Optional[date] = None
+    
+    class Config:
+        validate_assignment = True
 
 
 class EmployeeResponse(EmployeeBase):

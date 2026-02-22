@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  backend-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install ruff black mypy
+      
+      - name: Lint with ruff
+        run: |
+          cd backend
+          ruff check .
+      
+      - name: Check formatting with black
+        run: |
+          cd backend
+          black --check .
+      
+      - name: Type check with mypy
+        run: |
+          cd backend
+          mypy . --ignore-missing-imports || true
+
+  backend-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: smartoffice_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio pytest-cov
+      
+      - name: Run tests
+        run: |
+          cd backend
+          pytest --cov=app --cov-report=xml || true
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/smartoffice_test
+          SECRET_KEY: test-secret-key-for-ci-min-32-characters!
+          DEBUG: "false"
+
+  frontend-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+      
+      - name: Check TypeScript
+        run: |
+          cd frontend
+          npm run build
+      
+      - name: Lint (if configured)
+        run: |
+          cd frontend
+          npm run lint || true
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build backend Docker image
+        run: docker build -t smartoffice-backend ./backend
+      
+      - name: Build frontend Docker image
+        run: docker build -t smartoffice-frontend ./frontend

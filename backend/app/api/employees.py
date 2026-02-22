@@ -71,21 +71,27 @@ async def create_employee(
     db: AsyncSession = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    # Verify department exists
-    dept = await db.get(Department, employee_data.department_id)
-    if not dept:
-        raise HTTPException(status_code=400, detail="Department not found")
-    
-    # Verify position exists
-    pos = await db.get(Position, employee_data.position_id)
-    if not pos:
-        raise HTTPException(status_code=400, detail="Position not found")
-    
-    employee = Employee(**employee_data.model_dump())
-    db.add(employee)
-    await db.commit()
-    await db.refresh(employee)
-    return employee
+    try:
+        # Verify department exists
+        dept = await db.get(Department, employee_data.department_id)
+        if not dept:
+            raise HTTPException(status_code=400, detail="Department not found")
+
+        # Verify position exists
+        pos = await db.get(Position, employee_data.position_id)
+        if not pos:
+            raise HTTPException(status_code=400, detail="Position not found")
+
+        employee = Employee(**employee_data.model_dump())
+        db.add(employee)
+        await db.commit()
+        await db.refresh(employee)
+        return employee
+    except HTTPException:
+        raise
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
 @router.put("/{employee_id}", response_model=EmployeeResponse)
@@ -95,16 +101,22 @@ async def update_employee(
     db: AsyncSession = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    employee = await db.get(Employee, employee_id)
-    if not employee:
-        raise HTTPException(status_code=404, detail="Employee not found")
-    
-    for field, value in employee_data.model_dump(exclude_unset=True).items():
-        setattr(employee, field, value)
-    
-    await db.commit()
-    await db.refresh(employee)
-    return employee
+    try:
+        employee = await db.get(Employee, employee_id)
+        if not employee:
+            raise HTTPException(status_code=404, detail="Employee not found")
+
+        for field, value in employee_data.model_dump(exclude_unset=True).items():
+            setattr(employee, field, value)
+
+        await db.commit()
+        await db.refresh(employee)
+        return employee
+    except HTTPException:
+        raise
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
 @router.delete("/{employee_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -113,9 +125,15 @@ async def delete_employee(
     db: AsyncSession = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    employee = await db.get(Employee, employee_id)
-    if not employee:
-        raise HTTPException(status_code=404, detail="Employee not found")
-    
-    await db.delete(employee)
-    await db.commit()
+    try:
+        employee = await db.get(Employee, employee_id)
+        if not employee:
+            raise HTTPException(status_code=404, detail="Employee not found")
+
+        await db.delete(employee)
+        await db.commit()
+    except HTTPException:
+        raise
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

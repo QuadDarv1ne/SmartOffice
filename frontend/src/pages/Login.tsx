@@ -7,8 +7,8 @@ interface LoginProps {
 }
 
 const Login = ({ onLogin }: LoginProps) => {
-  const [email, setEmail] = useState('admin@smartoffice.com')
-  const [password, setPassword] = useState('admin123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -47,6 +47,7 @@ const Login = ({ onLogin }: LoginProps) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@company.com"
                 required
               />
             </Form.Group>
@@ -57,6 +58,7 @@ const Login = ({ onLogin }: LoginProps) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
                 required
               />
             </Form.Group>

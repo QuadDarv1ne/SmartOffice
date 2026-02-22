@@ -3,17 +3,17 @@ services:
     image: postgres:15-alpine
     container_name: smartoffice-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: smartoffice
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-smartoffice}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./scripts/01_create_tables.sql.txt:/docker-entrypoint-initdb.d/01_create_tables.sql
-      - ./scripts/05_insert_test_data.sql.txt:/docker-entrypoint-initdb.d/02_insert_test_data.sql
+      - ./scripts/01_create_tables.sql:/docker-entrypoint-initdb.d/01_create_tables.sql
+      - ./scripts/05_insert_test_data.sql:/docker-entrypoint-initdb.d/02_insert_test_data.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -21,10 +21,13 @@ services:
   backend:
     build: ./backend
     container_name: smartoffice-backend
+    env_file:
+      - ./backend/.env
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/smartoffice
-      SECRET_KEY: your-secret-key-change-in-production
-      DEBUG: "true"
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-smartoffice}
+      SECRET_KEY: ${SECRET_KEY:-your-super-secret-key-change-in-production-min-32-chars}
+      DEBUG: ${DEBUG:-true}
+      CORS_ORIGINS: ${CORS_ORIGINS:-["http://localhost:5173","http://localhost:3000"]}
     ports:
       - "8000:8000"
     depends_on:
@@ -36,6 +39,10 @@ services:
   frontend:
     build: ./frontend
     container_name: smartoffice-frontend
+    env_file:
+      - ./frontend/.env
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8000/api}
     ports:
       - "5173:5173"
     depends_on:
