@@ -1,10 +1,10 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from contextlib import asynccontextmanager
 from sqlalchemy.exc import SQLAlchemyError
 from pydantic import ValidationError
-from slowapi import SlowAPI, _rate_limit_exceeded_handler
+from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 import structlog
@@ -14,10 +14,8 @@ from app.core.sentry_config import init_sentry, set_sentry_user
 
 init_sentry()
 
-# Prometheus middleware
+# Prometheus middleware (will be added after app creation)
 from app.middleware.prometheus import PrometheusMiddleware
-
-app.add_middleware(PrometheusMiddleware)
 
 from app.core.config import settings
 from app.core.database import init_db
@@ -54,7 +52,7 @@ from app.api import (
 
 
 # Инициализация rate limiter
-from slowapi.limiter import rate_limiter
+# (use application-level rate_limiter from app.core.limiter)
 
 
 @asynccontextmanager
@@ -76,6 +74,9 @@ app = FastAPI(
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
 )
+
+# Prometheus middleware
+app.add_middleware(PrometheusMiddleware)
 
 # Добавляем rate limiter
 app.state.limiter = rate_limiter

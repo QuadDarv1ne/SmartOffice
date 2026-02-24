@@ -10,6 +10,11 @@ class LoggingSettings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT: str = "json"  # json или console
     LOG_FILE: str = "logs/app.log"
+    
+    class Config:
+        env_file = ".env"
+        case_sensitive = True
+        extra = "ignore"
 
 
 logging_settings = LoggingSettings()

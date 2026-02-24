@@ -22,6 +22,7 @@ class SentrySettings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "ignore"
 
 
 def init_sentry():
