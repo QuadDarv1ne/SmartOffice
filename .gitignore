@@ -37,6 +37,12 @@ frontend/.pnp.js
 frontend/.cache/
 frontend/tsconfig.tsbuildinfo
 
+# --- Deployment ---
+.netlify/
+.netlify-state
+.netlify.json
+.wrangler/
+
 # --- IDE / Editors ---
 .idea/
 .vscode/

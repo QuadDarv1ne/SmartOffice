@@ -177,3 +177,52 @@ setup: ## Первоначальная настройка проекта
 	@echo "$(BLUE)Frontend: http://localhost:5173$(NC)"
 	@echo "$(BLUE)Backend: http://localhost:8000$(NC)"
 	@echo "$(BLUE)API Docs: http://localhost:8000/api/docs$(NC)"
+
+# ============================================
+# Деплой
+# ============================================
+
+validate: ## Валидировать конфигурацию деплоя
+	@echo "$(YELLOW)Validating deployment configuration...$(NC)"
+	@./scripts/validate-deploy.sh || $(MAKE) validate-win
+
+validate-win: ## Валидировать конфигурацию деплоя (Windows)
+	@powershell -ExecutionPolicy Bypass -File scripts/validate-deploy.ps1
+
+test-prod-build: ## Тестовая production сборка frontend
+	@echo "$(YELLOW)Testing production build...$(NC)"
+	@./scripts/test-build.sh || $(MAKE) test-prod-build-win
+
+test-prod-build-win: ## Тестовая production сборка (Windows)
+	@powershell -ExecutionPolicy Bypass -File scripts/test-build.ps1
+
+deploy-netlify: ## Деплой на Netlify (CLI)
+	@echo "$(GREEN)Deploying to Netlify...$(NC)"
+	cd frontend && $(NPM) run build
+	netlify deploy --prod --dir=dist
+
+deploy-netlify-preview: ## Деплой preview на Netlify
+	@echo "$(GREEN)Deploying preview to Netlify...$(NC)"
+	cd frontend && $(NPM) run build
+	netlify deploy --dir=dist
+
+deploy-cloudflare: ## Деплой на Cloudflare Pages (CLI)
+	@echo "$(GREEN)Deploying to Cloudflare Pages...$(NC)"
+	cd frontend && $(NPM) run build
+	wrangler pages deploy ./dist --project-name=smartoffice
+
+deploy-cloudflare-preview: ## Деплой preview на Cloudflare
+	@echo "$(GREEN)Deploying preview to Cloudflare...$(NC)"
+	cd frontend && $(NPM) run build
+	wrangler pages deploy ./dist --project-name=smartoffice --branch=preview
+
+deploy-check: ## Проверка статуса деплоя
+	@echo "$(BLUE)Checking deployment status...$(NC)"
+	@echo "Netlify: https://app.netlify.com/sites/your-site/deploys"
+	@echo "Cloudflare: https://dash.cloudflare.com/?to=:/account/workers-and-pages"
+
+deploy-all: validate test-prod-build ## Деплой на все платформы
+	@echo "$(GREEN)Deploying to all platforms...$(NC)"
+	$(MAKE) deploy-netlify
+	$(MAKE) deploy-cloudflare
+	@echo "$(GREEN)Deployment complete!$(NC)"

@@ -1,0 +1,36 @@
+# Cloudflare Pages Configuration
+# Docs: https://developers.cloudflare.com/pages/configuration/
+
+name = "smartoffice-frontend"
+compatibility_date = "2024-01-01"
+
+[build_config]
+  command = "npm run build"
+  destination = "dist"
+  root = "frontend"
+  [build_config.environment_variables]
+    NODE_VERSION = "20"
+
+[vars]
+  VITE_SENTRY_ENVIRONMENT = "production"
+
+[env.preview.vars]
+  VITE_SENTRY_ENVIRONMENT = "preview"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+[[cache_rules]]
+  pattern = "/assets/*"
+  cache_ttl = 31536000
+  edge_ttl = 31536000
+
+[[cache_rules]]
+  pattern = "/*.{js,css,png,jpg,jpeg,gif,svg,woff,woff2}"
+  cache_ttl = 2592000
+  edge_ttl = 2592000
