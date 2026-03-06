@@ -37,6 +37,7 @@ install-dev: ## Установить dev зависимости
 	cd backend && $(PIP) install -r requirements.txt
 	cd backend && $(PIP) install pre-commit
 	cd backend && pre-commit install
+	cd frontend && $(NPM) install
 
 dev: ## Запустить разработку (backend + frontend)
 	@echo "$(GREEN)Starting development environment...$(NC)"
@@ -94,6 +95,7 @@ lint-backend: ## Линтинг backend
 	@echo "$(YELLOW)Linting backend...$(NC)"
 	cd backend && ruff check .
 	cd backend && black --check .
+	cd backend && mypy . --ignore-missing-imports
 
 lint-backend-fix: ## Линтинг backend с авто-исправлением
 	@echo "$(GREEN)Fixing backend lint issues...$(NC)"
@@ -102,12 +104,14 @@ lint-backend-fix: ## Линтинг backend с авто-исправлением
 
 lint-frontend: ## Линтинг frontend
 	@echo "$(YELLOW)Linting frontend...$(NC)"
-	cd frontend && $(NPM) run lint || true
+	cd frontend && $(NPM) run lint
+	cd frontend && $(NPM) run format:check
 
 format: ## Форматировать код
 	@echo "$(GREEN)Formatting code...$(NC)"
 	cd backend && black .
 	cd backend && ruff check --fix .
+	cd frontend && $(NPM) run format
 
 migrate: ## Создать миграцию Alembic
 	@echo "$(YELLOW)Creating Alembic migration...$(NC)"
